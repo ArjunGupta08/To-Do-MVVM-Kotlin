@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.arjungupta.mytodo.databinding.ActivityMainBinding
 import com.arjungupta.mytodo.models.ToDoData
 import com.arjungupta.mytodo.viewModel.MainViewModel
-import com.arjungupta.mytodo.viewModel.MainViewModelFactory
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -47,13 +46,13 @@ class MainActivity : AppCompatActivity(), ToDoAdapter.OnItemClick {
         binding.recyclerToDo.layoutManager = LinearLayoutManager(this)
 
 
-        mainViewModel = ViewModelProvider(this, MainViewModelFactory(this))[MainViewModel::class.java]
+        mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
         binding.addBtn.setOnClickListener {
             openAddDialog()
         }
 
-        mainViewModel?.getData()?.observe(this) {
+        mainViewModel?.getData(this)?.observe(this) {
             toDoAdapter = ToDoAdapter(this, it)
             binding.recyclerToDo.adapter = toDoAdapter
             toDoAdapter.setOnItemClickListener(this)
@@ -167,7 +166,7 @@ class MainActivity : AppCompatActivity(), ToDoAdapter.OnItemClick {
     private fun updateData(id : Int, title : String, description : String) {
         CoroutineScope(IO).launch {
             mainViewModel!!.updateData(
-                ToDoData(id, title, description, priority, selectedDate)
+                ToDoData(id, title, description, priority, selectedDate), this@MainActivity
             )
         }
     }
@@ -175,7 +174,7 @@ class MainActivity : AppCompatActivity(), ToDoAdapter.OnItemClick {
     private fun insertData(title : String, description : String) {
         CoroutineScope(IO).launch {
             mainViewModel!!.insertData(
-                ToDoData(Random.nextInt(), title, description, priority, selectedDate)
+                ToDoData(Random.nextInt(), title, description, priority, selectedDate), this@MainActivity
             )
         }
     }
@@ -185,7 +184,7 @@ class MainActivity : AppCompatActivity(), ToDoAdapter.OnItemClick {
     }
 
     override fun onDeleteToDo(toDoData: ToDoData) {
-        mainViewModel?.deleteData(toDoData)
+        mainViewModel?.deleteData(toDoData, this)
     }
 
     private fun openDateDialog(dateTxt : TextView)  {

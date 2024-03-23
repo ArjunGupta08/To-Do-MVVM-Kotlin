@@ -6,23 +6,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arjungupta.mytodo.models.ToDoData
 import com.arjungupta.mytodo.repo.ToDoRepository
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MainViewModel(private val context: Context) : ViewModel() {
+class MainViewModel : ViewModel() {
 
     private val toDoRepository : ToDoRepository
         get() = ToDoRepository()
 
     // Returns LiveData from Room
-    fun getData() : LiveData<List<ToDoData>>? {
+    fun getData(context: Context) : LiveData<List<ToDoData>>? {
         return toDoRepository.getData(context)
     }
 
     // Insert ToDoData to Room
-    fun insertData(toDoData: ToDoData) {
+    fun insertData(toDoData: ToDoData, context: Context) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 toDoRepository.insertData(toDoData, context)
@@ -31,7 +30,7 @@ class MainViewModel(private val context: Context) : ViewModel() {
     }
 
     // update ToDoData to Room
-    fun updateData(toDoData: ToDoData) {
+    fun updateData(toDoData: ToDoData, context: Context) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 toDoRepository.updateData(context, toDoData)
@@ -40,7 +39,7 @@ class MainViewModel(private val context: Context) : ViewModel() {
     }
 
     // Delete ToDoData to Room
-    fun deleteData(toDoData: ToDoData) {
+    fun deleteData(toDoData: ToDoData, context: Context) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 toDoRepository.deleteData(toDoData, context)
