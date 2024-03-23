@@ -1,52 +1,43 @@
 package com.arjungupta.mytodo
 
-import android.app.DatePickerDialog
 import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.DatePicker
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.core.text.PrecomputedTextCompat.Params
-import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arjungupta.mytodo.databinding.ActivityMainBinding
 import com.arjungupta.mytodo.models.ToDoData
 import com.arjungupta.mytodo.viewModel.MainViewModel
 import com.arjungupta.mytodo.viewModel.MainViewModelFactory
-import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity(), ToDoAdapter.OnItemClick {
 
-    var priority = "High"
-    var selectedDate = ""
+    private var priority = "High"
+    private var selectedDate = ""
 
-    lateinit var binding : ActivityMainBinding
+    private lateinit var binding : ActivityMainBinding
 
     lateinit var toDoAdapter: ToDoAdapter
 
-    var mainViewModel: MainViewModel?= null
+    private var mainViewModel: MainViewModel?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,17 +47,17 @@ class MainActivity : AppCompatActivity(), ToDoAdapter.OnItemClick {
         binding.recyclerToDo.layoutManager = LinearLayoutManager(this)
 
 
-        mainViewModel = ViewModelProvider(this, MainViewModelFactory(this)).get(MainViewModel::class.java)
+        mainViewModel = ViewModelProvider(this, MainViewModelFactory(this))[MainViewModel::class.java]
 
         binding.addBtn.setOnClickListener {
             openAddDialog()
         }
 
-        mainViewModel!!.getData().observe(this) {
+        mainViewModel?.getData()?.observe(this) {
             toDoAdapter = ToDoAdapter(this, it)
             binding.recyclerToDo.adapter = toDoAdapter
             toDoAdapter.setOnItemClickListener(this)
-            toDoAdapter.notifyDataSetChanged()
+            toDoAdapter.notifyItemChanged(0)
 
             binding.searchET.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(
@@ -207,7 +198,7 @@ class MainActivity : AppCompatActivity(), ToDoAdapter.OnItemClick {
 
         datePickerDialog.addOnPositiveButtonClickListener { selectDate ->
             selectedDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date(selectDate))
-            dateTxt.text = selectedDate.toString()
+            dateTxt.text = selectedDate
         }
 
         datePickerDialog.show(supportFragmentManager, "DatePickerDialog")
