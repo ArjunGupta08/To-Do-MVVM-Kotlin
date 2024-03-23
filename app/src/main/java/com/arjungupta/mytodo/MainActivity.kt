@@ -173,7 +173,7 @@ class MainActivity : AppCompatActivity(), ToDoAdapter.OnItemClick {
     private fun insertData(title : String, description : String) {
         CoroutineScope(IO).launch {
             mainViewModel!!.insertData(
-                ToDoData(0, title, description, priority, selectedDate), this@MainActivity
+                ToDoData(title, description, priority, selectedDate), this@MainActivity
             )
         }
     }
