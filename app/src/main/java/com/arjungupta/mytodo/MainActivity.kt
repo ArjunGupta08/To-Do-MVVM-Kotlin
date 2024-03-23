@@ -25,7 +25,6 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import kotlin.random.Random
 
 class MainActivity : AppCompatActivity(), ToDoAdapter.OnItemClick {
 
@@ -174,7 +173,7 @@ class MainActivity : AppCompatActivity(), ToDoAdapter.OnItemClick {
     private fun insertData(title : String, description : String) {
         CoroutineScope(IO).launch {
             mainViewModel!!.insertData(
-                ToDoData(Random.nextInt(), title, description, priority, selectedDate), this@MainActivity
+                ToDoData(0, title, description, priority, selectedDate), this@MainActivity
             )
         }
     }
