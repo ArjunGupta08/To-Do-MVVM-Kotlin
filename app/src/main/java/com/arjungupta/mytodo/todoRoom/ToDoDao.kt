@@ -21,7 +21,7 @@ interface ToDoDao {
     @Update
     suspend fun updateData(toDoData: ToDoData)
 
-    @Query("SELECT * FROM todo")
+    @Query("SELECT * FROM todo_table")
     fun getData() : LiveData<List<ToDoData>>
 
 }

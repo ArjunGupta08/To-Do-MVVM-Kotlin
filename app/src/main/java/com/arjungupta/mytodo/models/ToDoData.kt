@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "todo")
+@Entity(tableName = "todo_table")
 class ToDoData {
 
     @PrimaryKey(autoGenerate = true)
